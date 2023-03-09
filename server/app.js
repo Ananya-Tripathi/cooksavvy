@@ -1,28 +1,23 @@
-const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
-const DB_url =
-  "mongodb+srv://yana:mongodb123@cluster0.v2cxbka.mongodb.net/recipes";
+const PORT = process.env.PORT;
 
-mongoose
-  .connect(DB_url)
-  .then(() => {
-    console.log("connection successfull");
-  })
-  .catch((err) => {
-    console.log("no connection");
-    console.log(err);
-  });
+const dbConnect = require("./db/dbConnnect.js");
 
+app.use(express.json);
+// linking routes
+app.use(require("./route/auth.js"));
 const middleware = (req, res, next) => {
   console.log("hello middleware");
   next();
 };
 
-app.get("/", (req, res) => {
-  res.send("hello");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello from app");
+// });
 app.get("/account", middleware, (req, res) => {
   res.send("hello account");
 });
@@ -35,6 +30,6 @@ app.get("/recipes", (req, res) => {
 app.get("/signin", (req, res) => {
   res.send("hello recipes");
 });
-app.listen(5000, () => {
-  console.log("server started at localhost:5000");
+app.listen(PORT, () => {
+  console.log(`server started at localhost:${PORT}`);
 });
